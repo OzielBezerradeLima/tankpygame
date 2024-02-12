@@ -1,6 +1,5 @@
 import pygame
 import sys
-import bomb
 import game
 
 pygame.init()
