@@ -1,9 +1,12 @@
 import pygame
-from main import screen
+import os
 
 
 def create_map(txt):
-    selected_map = (txt, "r")
+    from main import screen
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, txt)
+    selected_map = open(filename, 'r')
     walls = []
     empty_spaces = []
 

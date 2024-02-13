@@ -1,4 +1,4 @@
-from bomb import create_bomb
+from bomb import create_bomb, move_bombs
 
 
 class Tank:
@@ -52,31 +52,4 @@ class Tank:
                             'direction': self.direction, 'life_span': 5}
                 self.bombs.append(create_bomb(new_bomb))
                 print(self.player, "shot")
-
-    def move_bombs(self):
-        for bomb in self.bombs:
-            while bomb['life_span'] > 0:
-                match bomb['direction']:
-                    case 0:
-                        bomb['x'] += 1
-                    case 45:
-                        bomb['x'] += 1
-                        bomb['y'] += 1
-                    case 90:
-                        bomb['x'] += 1
-                    case 135:
-                        bomb['x'] += 1
-                        bomb['y'] -= 1
-                    case 180:
-                        bomb['y'] -= 1
-                    case 225:
-                        bomb['x'] -= 1
-                        bomb['y'] -= 1
-                    case 270:
-                        bomb['x'] -= 1
-                    case 315:
-                        bomb['x'] -= 1
-                        bomb['y'] += 1
-                bomb['life_span'] -= 1
-                print("Position of bomb shot by ", bomb['player'], " [", bomb['x'], ", ", bomb['y'], "]")
-            self.bombs.remove(bomb)
+        move_bombs(self.bombs)
