@@ -6,6 +6,7 @@ WIDTH, HEIGHT = 900, 600
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+WALL_COLOR = (45, 75, 7)
 
 # Inicializando tela e fonte
 pygame.init()

@@ -11,7 +11,11 @@ def create_map():
     filename = os.path.join(dirname, txt)
     selected_map = open(filename, 'r')
 
-    settings.screen.fill([0, 0, 0])
+    txt = "../assets/sand.jpeg"
+    background_image = pygame.image.load(os.path.join(dirname, txt))
+    dest = (0, 0)
+    settings.screen.blit(background_image, dest)
+
     walls = []
     empty_spaces = []
     y = 0
@@ -19,7 +23,7 @@ def create_map():
         x = 0
         for space in lines:
             if space == '1':
-                walls.append(pygame.draw.rect(settings.screen, (255, 255, 255), [x, y, 20, 20]))
+                walls.append(pygame.draw.rect(settings.screen, settings.WALL_COLOR, [x, y, 20, 20]))
             elif space == '0':
                 empty_spaces.append([x, y])
             x += 20
