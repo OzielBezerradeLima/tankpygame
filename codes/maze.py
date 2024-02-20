@@ -40,9 +40,13 @@ def draw_map():
     if not hasattr(draw_map, "walls"):
         draw_map.walls, draw_map.empty_spaces = create_map()
 
+    block_image = pygame.image.load(os.path.join(os.path.dirname(__file__), "../assets/wall_sprite.png"))
+
     # Desenha o fundo da tela
     settings.screen.blit(draw_map.background_image, (0, 0))
 
+    for wall_rect in draw_map.walls:
+        settings.screen.blit(block_image, wall_rect.topleft)
     # Desenha cada parede novamente
-    for wall in draw_map.walls:
-        pygame.draw.rect(settings.screen, settings.WALL_COLOR, wall)
+    #for wall in draw_map.walls:
+     #   pygame.draw.rect(settings.screen, settings.WALL_COLOR, wall)
