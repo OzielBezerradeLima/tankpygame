@@ -2,8 +2,6 @@ import maze
 import tank
 import pygame
 import sys
-import settings
-
 
 playing = True
 
@@ -19,8 +17,6 @@ def run():
         tank.player_active()
         tank.draw_bullet()
 
-
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 close_screen()
@@ -28,7 +24,6 @@ def run():
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-
 
 
 def close_screen():
