@@ -26,7 +26,7 @@ def run():
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-
+        maze.draw_map()
 
 
 def close_screen():
