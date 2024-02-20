@@ -9,7 +9,6 @@ playing = True
 
 
 def run():
-    maze.create_map()
     while playing:
         pygame.display.update()
         tank.controls(pygame.time.get_ticks())
@@ -18,6 +17,7 @@ def run():
         tank.bullet_ricochet()
         tank.player_active()
         tank.draw_bullet()
+        maze.draw_map()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
