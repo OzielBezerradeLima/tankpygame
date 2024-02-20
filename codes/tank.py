@@ -1,6 +1,7 @@
 import pygame
 import settings
 import os
+import maze
 
 
 class Player:
@@ -10,13 +11,15 @@ class Player:
         self.rect = self.image.get_rect()
         self.rotation_center = self.rect.center
         self.position = starting_position
-        self.speed = 5
+        self.speed = 0.3
         self.rotation_angle = 0
         self.lives = 3
         self.active = True
         self.controls = controls
         self.last_rotate_time = last_rotate_time
         self.last_shoot_time = last_shoot_time
+        self.x_change = 0
+        self.y_change = 0
 
     def rotate(self, angle):
         if self.active:
@@ -25,12 +28,13 @@ class Player:
     def move(self):
         if self.active:
             self.position += pygame.math.Vector2(0, -self.speed).rotate(-self.rotation_angle)
+            self.collision_walls(self.rotation_angle)
             self.position.x %= settings.WIDTH
             self.position.y %= settings.HEIGHT
 
     def shoot(self):
         if self.active:
-            bullet_speed = 7
+            bullet_speed = 5
             bullet_direction = pygame.math.Vector2(0, -bullet_speed).rotate(-self.rotation_angle)
             bullet_position_front = self.position + pygame.math.Vector2(self.rect.width / 2, 0).rotate(
                 -self.rotation_angle)
@@ -41,6 +45,22 @@ class Player:
         rotated_image = pygame.transform.rotate(self.original_image, self.rotation_angle)
         self.rect = rotated_image.get_rect(center=self.rotation_center)
         screen.blit(rotated_image, self.position - pygame.math.Vector2(self.rect.width / 2, self.rect.height / 2))
+
+    def collision_walls(self, direction):
+        if direction in [45, 90, 135, 215, 270, 315]:
+            hits = pygame.sprite.spritecollide(self, maze.walls_rect, False)
+            if hits:
+                if direction in [215, 270, 315]:
+                    self.rect.x = hits[0].rect.left - self.rect.width
+                if direction in [45, 90, 135]:
+                    self.rect.x = hits[0].rect.right
+        if direction in [0, 45, 135, 180, 215, 315]:
+            hits = pygame.sprite.spritecollide(self, maze.walls_rect, False)
+            if hits:
+                if direction in [135, 180, 215]:
+                    self.rect.y = hits[0].rect.top - self.rect.height
+                if direction in [0, 45, 315]:
+                    self.rect.y = hits[0].rect.bottom
 
 
 # Função para verificar a colisão entre dois retângulos
@@ -56,32 +76,46 @@ player1_controls = {'rotate_left': pygame.K_LEFT, 'rotate_right': pygame.K_RIGHT
                     'shoot': pygame.K_SPACE}
 player1_sprite = os.path.join(dirname, "../assets/tank_sprite2.png")
 player1 = Player(player1_sprite, "",
-                 pygame.math.Vector2(settings.WIDTH / 4, settings.HEIGHT / 2), player1_controls, 0, 0)
+                 pygame.math.Vector2(settings.WIDTH / 5, settings.HEIGHT / 2), player1_controls, 0, 0)
 
 player2_controls = {'rotate_left': pygame.K_a, 'rotate_right': pygame.K_d, 'move_forward': pygame.K_w,
                     'shoot': pygame.K_TAB}
 player2_sprite = (os.path.join(dirname, "../assets/tank2_sprite2.png"))
 player2 = Player(player2_sprite, "",
-                 pygame.math.Vector2(3 * settings.WIDTH / 4, settings.HEIGHT / 2), player2_controls, 0, 0)
+                 pygame.math.Vector2(3 * settings.WIDTH / 5, settings.HEIGHT / 2), player2_controls, 0, 0)
 
 # Defina a lista de balas
 bullets = []
 
-bullet_image_path = "C:/Users/Oziel/Downloads/tank2_sprite2.png"
+bullet_image_path = (os.path.join(dirname, "../assets/bullet_sprite.png"))
 bullet_image = pygame.image.load(bullet_image_path)
+
+# Cria funções para tocar sons
+shot_sound = (os.path.join(dirname, "../assets/tank_shot.wav"))
+tank_shot_sound = pygame.mixer.Sound(shot_sound)
+explosion_sound = (os.path.join(dirname, "../assets/tank_explosion.wav"))
+tank_explosion_sound = pygame.mixer.Sound(explosion_sound)
 
 
 def controls(now):
-    # Verifique os eventos de teclado para o jogador 1
     keys = pygame.key.get_pressed()
+    # Verifique os eventos de teclado para o jogador 1
     if keys[player1.controls['rotate_left']]:
         if now - player1.last_rotate_time >= settings.ROTATE_COOLDOWN:
             player1.last_rotate_time = pygame.time.get_ticks()
-            player1.rotate(45)
+            if player1.rotation_angle == 315:
+                player1.rotation_angle = 0
+            else:
+                player1.rotation_angle += 45
+            print(player1.rotation_angle)
     if keys[player1.controls['rotate_right']]:
         if now - player1.last_rotate_time >= settings.ROTATE_COOLDOWN:
             player1.last_rotate_time = pygame.time.get_ticks()
-            player1.rotate(-45)
+            if player1.rotation_angle == 0:
+                player1.rotation_angle = 315
+            else:
+                player1.rotation_angle -= 45
+            print(player1.rotation_angle)
     if keys[player1.controls['move_forward']]:
         player1.move()
     if keys[player1.controls['shoot']]:
@@ -89,16 +123,26 @@ def controls(now):
             player1.last_shoot_time = pygame.time.get_ticks()
             bullet = player1.shoot()
             bullets.append(bullet)
+            tank_shot_sound.play()
 
-    # Verifique os eventos de teclado para o jogador 1
+
+    # Verifique os eventos de teclado para o jogador 2
     if keys[player2.controls['rotate_left']]:
         if now - player2.last_rotate_time >= settings.ROTATE_COOLDOWN:
             player2.last_rotate_time = pygame.time.get_ticks()
-            player2.rotate(45)
+            if player2.rotation_angle == 315:
+                player2.rotation_angle = 0
+            else:
+                player2.rotation_angle += 45
+            print(player2.rotation_angle)
     if keys[player2.controls['rotate_right']]:
         if now - player2.last_rotate_time >= settings.SHOOT_COOLDOWN:
             player2.last_rotate_time = pygame.time.get_ticks()
-            player2.rotate(-45)
+            if player2.rotation_angle == 0:
+                player2.rotation_angle = 315
+            else:
+                player2.rotation_angle -= 45
+            print(player2.rotation_angle)
     if keys[player2.controls['move_forward']]:
         player2.move()
     if keys[player2.controls['shoot']]:
@@ -106,6 +150,7 @@ def controls(now):
             player2.last_shoot_time = pygame.time.get_ticks()
             bullet = player2.shoot()
             bullets.append(bullet)
+            tank_shot_sound.play()
 
 
 def bullet_move():
@@ -134,6 +179,7 @@ def bullet_player_collision():
                 if bullet['id'] != f'player_{player.controls["shoot"]}' and check_collision(player_rect, bullet_rect):
                     player.lives -= 1
                     bullets.remove(bullet)
+                    tank_explosion_sound.play()
                     print(f"O jogador {player.controls['shoot']} foi atingido! Vidas restantes: {player.lives}")
 
                     if player.lives == 0:
@@ -141,7 +187,8 @@ def bullet_player_collision():
                         player.active = False
                         player.lives = 3
                         player.position = pygame.math.Vector2(
-                            settings.WIDTH / 4 if player.controls['shoot'] == pygame.K_SPACE else 3 * settings.WIDTH / 4, settings.HEIGHT / 2)
+                            settings.WIDTH / 4 if player.controls['shoot'] == pygame.K_SPACE else
+                            3 * settings.WIDTH / 4, settings.HEIGHT / 2)
                         bullets = []
 
 
@@ -162,7 +209,46 @@ def player_active():
 
 def draw_bullet():
     # Desenhe as balas na tela
-    for bullet in bullets:
-        settings.screen.blit(bullet_image, bullet['position'] - pygame.math.Vector2(bullet_image.get_width() / 2,
-                             bullet_image.get_height() / 2))
+    match player1.rotation_angle:
+        case 0:
+            for bullet in bullets:
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 + 50,
+                                     bullet_image.get_height() / 2 + 30))
+        case 45:
+            for bullet in bullets:
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 + 80,
+                                     bullet_image.get_height() / 2 - 10))
+        case 90:
+            for bullet in bullets:
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 + 30,
+                                     bullet_image.get_height() / 2 - 50))
+        case 135:
+            for bullet in bullets:
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 - 10,
+                                     bullet_image.get_height() / 2 - 80))
+        case 180:
+            for bullet in bullets:
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 - 50,
+                                     bullet_image.get_height() / 2 - 30))
+        case 225:
+            for bullet in bullets:
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 - 80,
+                                     bullet_image.get_height() / 2 + 10))
+        case 270:
+            for bullet in bullets:
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 - 50,
+                                     bullet_image.get_height() / 2 + 50))
+        case 315:
+            for bullet in bullets:
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 + 10,
+                                     bullet_image.get_height() / 2 + 80))
+
     pygame.display.flip()
