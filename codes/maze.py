@@ -32,6 +32,8 @@ def create_map():
     draw_map.background_image = pygame.image.load(os.path.join(dirname, txt))
 
     return walls, empty_spaces  # Retorna as paredes e espaços vazios
+
+
 def draw_map():
     """Desenha o mapa continuamente na tela."""
     # Carrega o mapa aleatório se ainda não tiver sido carregado
