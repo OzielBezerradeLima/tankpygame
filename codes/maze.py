@@ -47,6 +47,4 @@ def draw_map():
 
     for wall_rect in draw_map.walls:
         settings.screen.blit(block_image, wall_rect.topleft)
-    # Desenha cada parede novamente
-    #for wall in draw_map.walls:
-     #   pygame.draw.rect(settings.screen, settings.WALL_COLOR, wall)
+
