@@ -18,7 +18,7 @@ def run():
         tank.bullet_ricochet()
         tank.player_active()
         tank.draw_bullet()
-        maze.draw_map()
+
 
 
         for event in pygame.event.get():
