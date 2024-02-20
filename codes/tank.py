@@ -67,7 +67,7 @@ player2 = Player(player2_sprite, "",
 # Defina a lista de balas
 bullets = []
 
-bullet_image_path = "C:/Users/Oziel/Downloads/tank2_sprite2.png"
+bullet_image_path = "../assets/tank2_sprite2.png"
 bullet_image = pygame.image.load(bullet_image_path)
 
 
