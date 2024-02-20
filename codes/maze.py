@@ -24,6 +24,7 @@ def create_map():
         for space in lines:
             if space == '1':
                 walls.append(pygame.draw.rect(settings.screen, settings.WALL_COLOR, [x, y, 20, 20]))
+
             elif space == '0':
                 empty_spaces.append([x, y])
             x += 20
