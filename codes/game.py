@@ -16,6 +16,7 @@ def run():
         tank.bullet_ricochet()
         tank.player_active()
         tank.draw_bullet()
+      #  tank.draw_bullet2()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
