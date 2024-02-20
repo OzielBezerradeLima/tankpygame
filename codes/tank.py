@@ -10,7 +10,7 @@ class Player:
         self.rect = self.image.get_rect()
         self.rotation_center = self.rect.center
         self.position = starting_position
-        self.speed = 5
+        self.speed = 0.3
         self.rotation_angle = 0
         self.lives = 3
         self.active = True
@@ -99,7 +99,7 @@ def controls(now):
             bullet = player1.shoot()
             bullets.append(bullet)
 
-    # Verifique os eventos de teclado para o jogador 1
+    # Verifique os eventos de teclado para o jogador 2
     if keys[player2.controls['rotate_left']]:
         if now - player2.last_rotate_time >= settings.ROTATE_COOLDOWN:
             player2.last_rotate_time = pygame.time.get_ticks()
@@ -158,7 +158,8 @@ def bullet_player_collision():
                         player.active = False
                         player.lives = 3
                         player.position = pygame.math.Vector2(
-                            settings.WIDTH / 4 if player.controls['shoot'] == pygame.K_SPACE else 3 * settings.WIDTH / 4, settings.HEIGHT / 2)
+                            settings.WIDTH / 4 if player.controls['shoot'] == pygame.K_SPACE else
+                            3 * settings.WIDTH / 4, settings.HEIGHT / 2)
                         bullets = []
 
 
@@ -182,35 +183,43 @@ def draw_bullet():
     match player1.rotation_angle:
         case 0:
             for bullet in bullets:
-                settings.screen.blit(bullet_image, bullet['position'] - pygame.math.Vector2(bullet_image.get_width() / 2 + 50,
-                                                                                   bullet_image.get_height() / 2 + 30))
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 + 50,
+                                     bullet_image.get_height() / 2 + 30))
         case 45:
             for bullet in bullets:
-                settings.screen.blit(bullet_image, bullet['position'] - pygame.math.Vector2(bullet_image.get_width() / 2 + 80,
-                                                                                   bullet_image.get_height() / 2 - 10))
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 + 80,
+                                     bullet_image.get_height() / 2 - 10))
         case 90:
             for bullet in bullets:
-                settings.screen.blit(bullet_image, bullet['position'] - pygame.math.Vector2(bullet_image.get_width() / 2 + 30,
-                                                                                   bullet_image.get_height() / 2 - 50))
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 + 30,
+                                     bullet_image.get_height() / 2 - 50))
         case 135:
             for bullet in bullets:
-                settings.screen.blit(bullet_image, bullet['position'] - pygame.math.Vector2(bullet_image.get_width() / 2 - 10,
-                                                                                   bullet_image.get_height() / 2 - 80))
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 - 10,
+                                     bullet_image.get_height() / 2 - 80))
         case 180:
             for bullet in bullets:
-                settings.screen.blit(bullet_image, bullet['position'] - pygame.math.Vector2(bullet_image.get_width() / 2 - 50,
-                                                                                   bullet_image.get_height() / 2 - 30))
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 - 50,
+                                     bullet_image.get_height() / 2 - 30))
         case 225:
             for bullet in bullets:
-                settings.screen.blit(bullet_image, bullet['position'] - pygame.math.Vector2(bullet_image.get_width() / 2 - 80,
-                                                                                   bullet_image.get_height() / 2 + 10))
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 - 80,
+                                     bullet_image.get_height() / 2 + 10))
         case 270:
             for bullet in bullets:
-                settings.screen.blit(bullet_image, bullet['position'] - pygame.math.Vector2(bullet_image.get_width() / 2 - 50,
-                                                                                   bullet_image.get_height() / 2 + 50))
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 - 50,
+                                     bullet_image.get_height() / 2 + 50))
         case 315:
             for bullet in bullets:
-                settings.screen.blit(bullet_image, bullet['position'] - pygame.math.Vector2(bullet_image.get_width() / 2 + 10,
-                                                                                   bullet_image.get_height() / 2 + 80))
+                settings.screen.blit(bullet_image, bullet['position'] -
+                                     pygame.math.Vector2(bullet_image.get_width() / 2 + 10,
+                                     bullet_image.get_height() / 2 + 80))
 
     pygame.display.flip()
