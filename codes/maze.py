@@ -3,6 +3,10 @@ import os
 import settings
 import random
 
+walls = []
+empty_spaces = []
+walls_rect = []
+
 
 def create_map():
     random_choice = str(random.randint(1, 5))
@@ -46,5 +50,5 @@ def draw_map():
     settings.screen.blit(draw_map.background_image, (0, 0))
 
     for wall_rect in draw_map.walls:
-        settings.screen.blit(block_image, wall_rect.topleft)
+        walls_rect.append(settings.screen.blit(block_image, wall_rect.topleft))
 
