@@ -3,9 +3,18 @@ import os
 import settings
 import random
 
+
+class Wall(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.image.load(os.path.join(os.path.dirname(__file__), "../assets/wall_sprite.png"))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+
 walls = []
 empty_spaces = []
-walls_rect = []
 
 
 def create_map():
@@ -20,14 +29,15 @@ def create_map():
     dest = (0, 0)
     settings.screen.blit(background_image, dest)
 
-    walls = []
-    empty_spaces = []
+    global walls, empty_spaces
+
     y = 0
     for lines in selected_map:
         x = 0
         for space in lines:
             if space == '1':
-                walls.append(pygame.draw.rect(settings.screen, settings.WALL_COLOR, [x, y, 20, 20]))
+                wall = Wall(x, y)
+                walls.append(wall)
             elif space == '0':
                 empty_spaces.append([x, y])
             x += 20
@@ -49,6 +59,5 @@ def draw_map():
     # Desenha o fundo da tela
     settings.screen.blit(draw_map.background_image, (0, 0))
 
-    for wall_rect in draw_map.walls:
-        walls_rect.append(settings.screen.blit(block_image, wall_rect.topleft))
-
+    for wall in draw_map.walls:
+        settings.screen.blit(wall.image, wall.rect)

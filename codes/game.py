@@ -15,8 +15,8 @@ def run():
         tank.bullet_player_collision()
         tank.bullet_ricochet()
         tank.player_active()
-        tank.draw_bullet()
-      #  tank.draw_bullet2()
+        tank.Player.draw_bullet(tank.player1)
+        tank.Player.draw_bullet(tank.player2)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
