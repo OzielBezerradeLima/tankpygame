@@ -67,43 +67,43 @@ class Player:
             case 0:
                 for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
-                                         pygame.math.Vector2(bullet_image.get_width() / 2 + 50,
+                                         pygame.math.Vector2(bullet_image.get_width() / 2 + 30,
                                          bullet_image.get_height() / 2 + 30))
             case 45:
                 for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
-                                         pygame.math.Vector2(bullet_image.get_width() / 2 + 80,
+                                         pygame.math.Vector2(bullet_image.get_width() / 2 + 50,
                                          bullet_image.get_height() / 2 - 10))
             case 90:
                 for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
                                          pygame.math.Vector2(bullet_image.get_width() / 2 + 30,
-                                         bullet_image.get_height() / 2 - 50))
+                                         bullet_image.get_height() / 2 - 30))
             case 135:
                 for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
                                          pygame.math.Vector2(bullet_image.get_width() / 2 - 10,
-                                         bullet_image.get_height() / 2 - 80))
+                                         bullet_image.get_height() / 2 - 50))
             case 180:
                 for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
-                                         pygame.math.Vector2(bullet_image.get_width() / 2 - 50,
+                                         pygame.math.Vector2(bullet_image.get_width() / 2 - 30,
                                          bullet_image.get_height() / 2 - 30))
             case 225:
                 for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
-                                         pygame.math.Vector2(bullet_image.get_width() / 2 - 80,
+                                         pygame.math.Vector2(bullet_image.get_width() / 2 - 50,
                                          bullet_image.get_height() / 2 + 10))
             case 270:
                 for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
                                          pygame.math.Vector2(bullet_image.get_width() / 2 - 50,
-                                         bullet_image.get_height() / 2 + 50))
+                                         bullet_image.get_height() / 2 + 30))
             case 315:
                 for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
                                          pygame.math.Vector2(bullet_image.get_width() / 2 + 10,
-                                         bullet_image.get_height() / 2 + 80))
+                                         bullet_image.get_height() / 2 + 50))
         pygame.display.flip()
 
 
@@ -119,11 +119,11 @@ dirname = os.path.dirname(__file__)
 players = []
 player1_controls = {'rotate_left': pygame.K_LEFT, 'rotate_right': pygame.K_RIGHT, 'move_forward': pygame.K_UP,
                     'shoot': pygame.K_SPACE}
-player1_sprite = os.path.join(dirname, "../assets/tank_sprite2.png")
+player1_sprite = os.path.join(dirname, "../assets/tank_sprite.png")
 
 player2_controls = {'rotate_left': pygame.K_a, 'rotate_right': pygame.K_d, 'move_forward': pygame.K_w,
                     'shoot': pygame.K_TAB}
-player2_sprite = (os.path.join(dirname, "../assets/tank2_sprite2.png"))
+player2_sprite = (os.path.join(dirname, "../assets/tank2_sprite.png"))
 
 player1 = Player(player1_sprite, "",
                  pygame.math.Vector2(settings.WIDTH / 8, settings.HEIGHT / 2), player1_controls,
