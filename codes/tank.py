@@ -18,6 +18,7 @@ class Player:
         self.controls = controls
         self.last_rotate_time = last_rotate_time
         self.last_shoot_time = last_shoot_time
+        self.bullets = []
 
     def rotate(self, angle):
         if self.active:
@@ -64,42 +65,42 @@ class Player:
         # Desenhe as balas na tela
         match self.rotation_angle:
             case 0:
-                for bullet in bullets:
+                for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
                                          pygame.math.Vector2(bullet_image.get_width() / 2 + 50,
                                          bullet_image.get_height() / 2 + 30))
             case 45:
-                for bullet in bullets:
+                for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
                                          pygame.math.Vector2(bullet_image.get_width() / 2 + 80,
                                          bullet_image.get_height() / 2 - 10))
             case 90:
-                for bullet in bullets:
+                for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
                                          pygame.math.Vector2(bullet_image.get_width() / 2 + 30,
                                          bullet_image.get_height() / 2 - 50))
             case 135:
-                for bullet in bullets:
+                for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
                                          pygame.math.Vector2(bullet_image.get_width() / 2 - 10,
                                          bullet_image.get_height() / 2 - 80))
             case 180:
-                for bullet in bullets:
+                for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
                                          pygame.math.Vector2(bullet_image.get_width() / 2 - 50,
                                          bullet_image.get_height() / 2 - 30))
             case 225:
-                for bullet in bullets:
+                for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
                                          pygame.math.Vector2(bullet_image.get_width() / 2 - 80,
                                          bullet_image.get_height() / 2 + 10))
             case 270:
-                for bullet in bullets:
+                for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
                                          pygame.math.Vector2(bullet_image.get_width() / 2 - 50,
                                          bullet_image.get_height() / 2 + 50))
             case 315:
-                for bullet in bullets:
+                for bullet in self.bullets:
                     settings.screen.blit(bullet_image, bullet['position'] -
                                          pygame.math.Vector2(bullet_image.get_width() / 2 + 10,
                                          bullet_image.get_height() / 2 + 80))
@@ -134,7 +135,6 @@ players.append(player1)
 players.append(player2)
 
 # Defina a lista de balas
-bullets = []
 
 bullet_image_path = (os.path.join(dirname, "../assets/bullet_sprite.png"))
 bullet_image = pygame.image.load(bullet_image_path)
@@ -172,27 +172,27 @@ def controls(now):
             if now - player.last_shoot_time >= settings.SHOOT_COOLDOWN:
                 player.last_shoot_time = pygame.time.get_ticks()
                 bullet = player.shoot()
-                bullets.append(bullet)
+                player.bullets.append(bullet)
                 tank_shot_sound.play()
 
 
 def bullet_move():
     # Atualize as posições e tempos de vida das balas
-    for bullet in bullets:
-        bullet['position'] += bullet['direction']
-        bullet['life'] -= 1
-        if bullet['life'] <= 0:
-            bullets.remove(bullet)
+    for player in players:
+        for bullet in player.bullets:
+            bullet['position'] += bullet['direction']
+            bullet['life'] -= 1
+            if bullet['life'] <= 0:
+                player.bullets.remove(bullet)
 
 
 def bullet_player_collision():
     # Verifique a colisão entre jogadores e balas
-    global bullets
-    for player in [player1, player2]:
+    for player in players:
         if player.active:
             player_rect = player.rect.move(player.position.x - player.rect.width / 2,
                                            player.position.y - player.rect.height / 2)
-            for bullet in bullets:
+            for bullet in player.bullets:
                 bullet_rect = pygame.Rect(bullet['position'].x - bullet_image.get_width() / 2,
                                           bullet['position'].y - bullet_image.get_height() / 2,
                                           bullet_image.get_width(),
@@ -201,7 +201,7 @@ def bullet_player_collision():
                 # Verifique a colisão apenas se o identificador da bala for diferente do identificador do jogador
                 if bullet['id'] != f'player_{player.controls["shoot"]}' and check_collision(player_rect, bullet_rect):
                     player.lives -= 1
-                    bullets.remove(bullet)
+                    player.bullets.remove(bullet)
                     tank_explosion_sound.play()
                     print(f"O jogador {player.controls['shoot']} foi atingido! Vidas restantes: {player.lives}")
 
@@ -212,14 +212,14 @@ def bullet_player_collision():
                         player.position = pygame.math.Vector2(
                             settings.WIDTH / 4 if player.controls['shoot'] == pygame.K_SPACE else
                             3 * settings.WIDTH / 4, settings.HEIGHT / 2)
-                        bullets = []
 
 
 def bullet_ricochet():
     # Verifique se a bala atingiu as bordas da tela e aplique a mecânica de ricochete
-    for bullet in bullets:
-        if not (0 <= bullet['position'].x <= settings.WIDTH and 0 <= bullet['position'].y <= settings.HEIGHT):
-            bullet['direction'] = -bullet['direction']
+    for player in players:
+        for bullet in player.bullets:
+            if not (0 <= bullet['position'].x <= settings.WIDTH and 0 <= bullet['position'].y <= settings.HEIGHT):
+                bullet['direction'] = -bullet['direction']
 
 
 def player_active():
