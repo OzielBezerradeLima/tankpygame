@@ -116,6 +116,7 @@ def check_collision(rect1, rect2):
 dirname = os.path.dirname(__file__)
 
 # Crie instâncias da classe Player
+players = []
 player1_controls = {'rotate_left': pygame.K_LEFT, 'rotate_right': pygame.K_RIGHT, 'move_forward': pygame.K_UP,
                     'shoot': pygame.K_SPACE}
 player1_sprite = os.path.join(dirname, "../assets/tank_sprite.png")
@@ -188,31 +189,35 @@ def bullet_move():
 
 def bullet_player_collision():
     # Verifique a colisão entre jogadores e balas
+    global player_rect
+    player_rect_list = []
     for player in players:
         if player.active:
             player_rect = player.rect.move(player.position.x - player.rect.width / 2,
                                            player.position.y - player.rect.height / 2)
-            for bullet in player.bullets:
-                bullet_rect = pygame.Rect(bullet['position'].x - bullet_image.get_width() / 2,
-                                          bullet['position'].y - bullet_image.get_height() / 2,
-                                          bullet_image.get_width(),
-                                          bullet_image.get_height())
-
-                # Verifique a colisão apenas se o identificador da bala for diferente do identificador do jogador
-                if bullet['id'] != f'player_{player.controls["shoot"]}' and check_collision(player_rect, bullet_rect):
-                    player.lives -= 1
+        player_rect_list.append(player_rect)
+    for player in players:
+        for bullet in player.bullets:
+            bullet_rect = pygame.Rect(bullet['position'].x - bullet_image.get_width() / 2,
+                                      bullet['position'].y - bullet_image.get_height() / 2,
+                                      bullet_image.get_width(),
+                                      bullet_image.get_height())
+            # Verifique a colisão apenas se o identificador da bala for diferente do identificador do jogador
+            for x in range(2):
+                if bullet['id'] != f'player_{players[x].controls["shoot"]}' and check_collision(player_rect_list[x],
+                                                                                                bullet_rect):
+                    players[x].lives -= 1
                     player.bullets.remove(bullet)
                     tank_explosion_sound.play()
-                    print(f"O jogador {player.controls['shoot']} foi atingido! Vidas restantes: {player.lives}")
+                    print(f"O jogador {players[x].controls['shoot']} foi atingido! Vidas restantes: {players[x].lives}")
 
-                    if player.lives == 0:
-                        print(f"Game Over! Jogador {player.controls['shoot']} derrotado!")
-                        player.active = False
-                        player.lives = 3
-                        player.position = pygame.math.Vector2(
-                            settings.WIDTH / 4 if player.controls['shoot'] == pygame.K_SPACE else
+                    if players[x].lives == 0:
+                        print(f"Game Over! Jogador {players[x].controls['shoot']} derrotado!")
+                        players[x].active = False
+                        players[x].lives = 3
+                        players[x].position = pygame.math.Vector2(
+                            settings.WIDTH / 4 if players[x].controls['shoot'] == pygame.K_SPACE else
                             3 * settings.WIDTH / 4, settings.HEIGHT / 2)
-                        bullets = []
 
 
 def bullet_ricochet():
